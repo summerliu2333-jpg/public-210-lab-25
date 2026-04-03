@@ -25,8 +25,8 @@ TimingResult runReadTest(const string& filename) {
     set<string> st;
     string code;
 
-    auto start = high_resolution_clock::now();
     ifstream fin(filename);
+    auto start = high_resolution_clock::now();
     while (fin >> code) {
         vec.push_back(code);
     }
@@ -34,8 +34,8 @@ TimingResult runReadTest(const string& filename) {
     auto end = high_resolution_clock::now();
     long long vec_time = duration_cast<nanoseconds>(end - start).count();
 
-    start = high_resolution_clock::now();
     fin.open(filename);
+    start = high_resolution_clock::now();
     while (fin >> code) {
         lst.push_back(code);
     }
@@ -43,8 +43,8 @@ TimingResult runReadTest(const string& filename) {
     end = high_resolution_clock::now();
     long long lst_time = duration_cast<nanoseconds>(end - start).count();
 
-    start = high_resolution_clock::now();
     fin.open(filename);
+    start = high_resolution_clock::now();
     while (fin >> code) {
         st.insert(code);
     }
@@ -67,6 +67,30 @@ TimingResult runSortTest(vector<string>& vec, list<string>& lst, set<string>& st
     long long lst_time = duration_cast<nanoseconds>(end - start).count();
 
     return {"Sort", vec_time, lst_time, -1};
+}
+
+TimingResult runInsertTest(vector<string>& vec, list<string>& lst, set<string>& st) {
+    const string insert_val = "TESTCODE";
+
+    auto vec_it = vec.begin() + vec.size() / 2;
+    auto start = high_resolution_clock::now();
+    vec.insert(vec_it, insert_val);
+    auto end = high_resolution_clock::now();
+    long long vec_time = duration_cast<nanoseconds>(end - start).count();
+
+    auto lst_it = lst.begin();
+    advance(lst_it, lst.size() / 2);
+    start = high_resolution_clock::now();
+    lst.insert(lst_it, insert_val);
+    end = high_resolution_clock::now();
+    long long lst_time = duration_cast<nanoseconds>(end - start).count();
+
+    start = high_resolution_clock::now();
+    st.insert(insert_val);
+    end = high_resolution_clock::now();
+    long long st_time = duration_cast<nanoseconds>(end - start).count();
+
+    return {"Insert", vec_time, lst_time, st_time};
 }
 
 void printResults(const vector<TimingResult>& results) {
@@ -118,6 +142,9 @@ int main() {
 
     TimingResult sort_res = runSortTest(vec, lst, st);
     results.push_back(sort_res);
+
+    TimingResult insert_res = runInsertTest(vec, lst, st);
+    results.push_back(insert_res);
 
     printResults(results);
 
