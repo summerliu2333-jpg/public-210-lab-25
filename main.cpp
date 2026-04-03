@@ -93,6 +93,30 @@ TimingResult runInsertTest(vector<string>& vec, list<string>& lst, set<string>& 
     return {"Insert", vec_time, lst_time, st_time};
 }
 
+TimingResult runDeleteTest(vector<string>& vec, list<string>& lst, set<string>& st) {
+    auto vec_it = vec.begin() + vec.size() / 2;
+    auto start = high_resolution_clock::now();
+    vec.erase(vec_it);
+    auto end = high_resolution_clock::now();
+    long long vec_time = duration_cast<nanoseconds>(end - start).count();
+
+    auto lst_it = lst.begin();
+    advance(lst_it, lst.size() / 2);
+    start = high_resolution_clock::now();
+    lst.erase(lst_it);
+    end = high_resolution_clock::now();
+    long long lst_time = duration_cast<nanoseconds>(end - start).count();
+
+    auto st_it = st.begin();
+    advance(st_it, st.size() / 2);
+    start = high_resolution_clock::now();
+    st.erase(st_it);
+    end = high_resolution_clock::now();
+    long long st_time = duration_cast<nanoseconds>(end - start).count();
+
+    return {"Delete", vec_time, lst_time, st_time};
+}
+
 void printResults(const vector<TimingResult>& results) {
     cout << right << setw(12) << "Operation"
          << setw(10) << "Vector"
@@ -145,6 +169,9 @@ int main() {
 
     TimingResult insert_res = runInsertTest(vec, lst, st);
     results.push_back(insert_res);
+
+    TimingResult delete_res = runDeleteTest(vec, lst, st);
+    results.push_back(delete_res);
 
     printResults(results);
 
