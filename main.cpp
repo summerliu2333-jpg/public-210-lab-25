@@ -55,6 +55,20 @@ TimingResult runReadTest(const string& filename) {
     return {"Read", vec_time, lst_time, st_time};
 }
 
+TimingResult runSortTest(vector<string>& vec, list<string>& lst, set<string>& st) {
+    auto start = high_resolution_clock::now();
+    sort(vec.begin(), vec.end());
+    auto end = high_resolution_clock::now();
+    long long vec_time = duration_cast<nanoseconds>(end - start).count();
+
+    start = high_resolution_clock::now();
+    lst.sort();
+    end = high_resolution_clock::now();
+    long long lst_time = duration_cast<nanoseconds>(end - start).count();
+
+    return {"Sort", vec_time, lst_time, -1};
+}
+
 void printResults(const vector<TimingResult>& results) {
     cout << right << setw(12) << "Operation"
          << setw(10) << "Vector"
@@ -63,7 +77,7 @@ void printResults(const vector<TimingResult>& results) {
 
     for (const auto& res : results) {
         cout << right << setw(12) << res.operation;
-        
+
         if (res.vector_time == -1)
             cout << setw(10) << "-1";
         else
@@ -101,6 +115,9 @@ int main() {
         st.insert(code);
     }
     fin.close();
+
+    TimingResult sort_res = runSortTest(vec, lst, st);
+    results.push_back(sort_res);
 
     printResults(results);
 
